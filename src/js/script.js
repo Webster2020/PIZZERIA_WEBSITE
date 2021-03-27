@@ -53,6 +53,17 @@
   };
 
   const app = {
+    initData: function() {
+      const thisApp = this;
+      thisApp.data = dataSource;
+    },
+    initMenu: function() {
+      const thisApp = this;
+      console.log('testData: ', thisApp.data);
+      for(let productData in thisApp.data.products) {
+        new Product(productData, thisApp.data.products[productData]); // (key, value of key)
+      }
+    },
     init: function(){
       const thisApp = this;
       console.log('*** App starting ***');
@@ -60,8 +71,31 @@
       console.log('classNames:', classNames);
       console.log('settings:', settings);
       console.log('templates:', templates);
+
+      thisApp.initData();
+      thisApp.initMenu();
     },
   };
 
+  class Product {
+    constructor(id, data) {
+      const thisProduct = this;
+      thisProduct.id = id;
+      thisProduct.data = data;
+      thisProduct.renderInMenu();
+      console.log('new Product: ', thisProduct);
+    }
+    renderInMenu() {
+      const thisProduct = this;
+      /* generate HTML based on template */
+      const generateHTML = templates.menuProduct(thisProduct.data);
+      /* create element using utils.createElementFromHTML */
+      thisProduct.element = utils.createDOMFromHTML(generateHTML);
+      /* find menu container */
+      const menuContainer = document.querySelector(select.containerOf.menu);
+      /* add element to menu */
+      menuContainer.appendChild(thisProduct.element);
+    }
+  }
   app.init();
 }
