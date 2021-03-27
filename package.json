@@ -14,7 +14,7 @@
         "test:js": "eslint src/js/",
         "test:scss": "stylelint src/sass/",
         "build": "npm-run-all build:* test",
-        "build:clean": "mkdirp dist && rm -r dist && mkdirp dist",
+        "build:clean": "rm -r dist && mkdirp dist",
         "build:copy": "copyfiles -a -u 1 -e \"**/sass/**/*\" -e \"**/.gitkeep\" \"src/**/*\" dist",
         "build:sass": "node-sass --output-style compact -o dist/css src/sass",
         "build:autoprefixer": "postcss dist/css/*.css --use autoprefixer -d dist/css",
