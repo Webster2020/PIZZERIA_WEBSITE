@@ -1,6 +1,6 @@
 /* global Handlebars, utils, dataSource */ // eslint-disable-line no-unused-vars
 
-const { utils } = require("stylelint");
+//const { utils } = require("stylelint");
 
 {
   'use strict';
@@ -61,18 +61,18 @@ const { utils } = require("stylelint");
     },
     initMenu: function() {
       const thisApp = this;
-      console.log('testData: ', thisApp.data);
+      //console.log('testData: ', thisApp.data);
       for(let productData in thisApp.data.products) {
         new Product(productData, thisApp.data.products[productData]); // (key, value of key)
       }
     },
     init: function(){
       const thisApp = this;
-      console.log('*** App starting ***');
-      console.log('thisApp:', thisApp);
-      console.log('classNames:', classNames);
-      console.log('settings:', settings);
-      console.log('templates:', templates);
+      //console.log('*** App starting ***');
+      //console.log('thisApp:', thisApp);
+      //console.log('classNames:', classNames);
+      //console.log('settings:', settings);
+      //console.log('templates:', templates);
 
       thisApp.initData();
       thisApp.initMenu();
@@ -83,13 +83,14 @@ const { utils } = require("stylelint");
     constructor(id, data) {
       const thisProduct = this;
       thisProduct.id = id;
-      thisProduct.data = data;
+      thisProduct.data = data; //wszystko co jest wartoscia kluczy w pliku data.js
       thisProduct.renderInMenu();
       thisProduct.getElements();
       thisProduct.initAccordion();
       thisProduct.initOrderForm();
       thisProduct.processOrder();
-      console.log('new Product: ', thisProduct);
+      
+      console.log('new Product data: ', thisProduct.data); //tu jest to wypisane 
     }
     renderInMenu() {
       const thisProduct = this;
@@ -133,32 +134,85 @@ const { utils } = require("stylelint");
     }
     initOrderForm() {
       const thisProduct = this;
-      console.log(thisProduct.initOrderForm);
+      //console.log(thisProduct.initOrderForm);
       
       thisProduct.form.addEventListener('submit', function(event){
         event.preventDefault();
         thisProduct.processOrder();
-        console.log("1");
+        console.log('1');
       });
       
       for(let input of thisProduct.formInputs){
         input.addEventListener('change', function(){
           thisProduct.processOrder();
-          console.log("2");
+          console.log('2');
         });
       }
       
       thisProduct.cartButton.addEventListener('click', function(event){
         event.preventDefault();
         thisProduct.processOrder();
-        console.log("3");
+        console.log('3');
       });
     }
     processOrder() {
       const thisProduct = this;
-      console.log(thisProduct.processOrder);
+    
+      // covert form to object structure e.g. { sauce: ['tomato'], toppings: ['olives', 'redPeppers']}
       const formData = utils.serializeFormToObject(thisProduct.form);
-      console.log('formData', formData);
+      /* TO DELETE LATER */
+      console.log('\n----NOWY OBIEKT-----\n\n', thisProduct.id, '\n\nformData', formData); //wszystko co jest w obiektach "params" w wartosciach kluczy w pliku data.js przedstawione w "fajny" sposob dzieki funckji utils.serial..... z pliku functions.js
+    
+      // set price to default price
+      let price = thisProduct.data.price; //wszystko co jest w obiektach "price" w wartosciach kluczy w pliku data.js
+      /* TO DELETE LATER */
+      console.log('price: ', thisProduct.data.price);
+      // for every category (param)...
+      for(let paramId in thisProduct.data.params) { //petla po parametrach (kategoriach)
+        // determine param value, e.g. paramId = 'toppings', param = { label: 'Toppings', type: 'checkboxes'... }
+        const param = thisProduct.data.params[paramId];
+        /* TO DELETE LATER */
+        console.log('params: ', paramId, '\nwartosc klucza params: ', param);
+    
+        // for every option in this category
+        for(let optionId in param.options) { //schodzimy jeden level glebiej w drzwie do opcji kazdego parametru
+          // determine option value, e.g. optionId = 'olives', option = { label: 'Olives', price: 2, default: true }
+          const option = param.options[optionId]; 
+          
+          console.log('params -> option (nazwa kolejnej podtablicy - nazwa klucza): ', optionId, '\nwartosci klucza opcji: ', option); 
+
+          //UWAGA!!!!!
+          //musze wejsc do option tak jak powyzej do param!!!!
+          //UWAGA!!!!!
+
+          console.log('-----------------------------------\nformData[paramId]: ', formData[paramId], '\n----------------------------------');
+          
+          
+          // check if there is param with a name of paramId in formData and if it includes optionId
+          if(formData[paramId] && formData[paramId].includes(optionId)) {
+            console.log("SPRAWDZAM CZY TRUE");
+            // check if the option is default
+            if(!optionId) {
+              console.log('DEFAULT == FALSE');
+            } else {
+              console.log('DEFAULT == TRUE');
+              console.log(option.price);              
+              // reduce price variable
+              price += option.price;
+              console.log('price after action: ', price);
+            }
+          } else { 
+            // check if the option is not default
+            if(optionId) {
+              console.log('DEFAULT == FALSE');
+            }
+          }
+          console.log('888888888888888888888888888888888888888888888888888888888888888888888888888888'); 
+        }
+      }
+    
+      // update calculated price in the HTML
+      thisProduct.priceElem.innerHTML = price;
     }
   }
   app.init();
