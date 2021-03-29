@@ -41,15 +41,13 @@
       imageVisible: 'active',
     },
   };
-
-  const settings = {
+  /*const settings = {
     amountWidget: {
       defaultValue: 1,
       defaultMin: 1,
       defaultMax: 9,
     }
-  };
-
+  }; */
   const templates = {
     menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
   };
@@ -111,6 +109,7 @@
       thisProduct.formInputs = thisProduct.form.querySelectorAll(select.all.formInputs);
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
+      thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
     }
     initAccordion() {
       const thisProduct = this;
@@ -175,22 +174,43 @@
         console.log('params: ', paramId, '\nwartosc klucza params: ', param);
     
         // for every option in this category
-        for(let optionId in param.options) { //schodzimy jeden level glebiej w drzwie do opcji kazdego parametru
+        for(let optionId in param.options) { //schodzimy jeden level glebiej w drzewie do opcji kazdego parametru
           // determine option value, e.g. optionId = 'olives', option = { label: 'Olives', price: 2, default: true }
           const option = param.options[optionId]; 
           
           console.log('params -> option (nazwa kolejnej podtablicy - nazwa klucza): ', optionId, '\nwartosci klucza opcji: ', option); 
 
-          //UWAGA!!!!!
-          //musze wejsc do option tak jak powyzej do param!!!!
-          //UWAGA!!!!!
-
           console.log('-----------------------------------\nformData[paramId]: ', formData[paramId], '\n----------------------------------');
           
+          const optionImage = thisProduct.imageWrapper.querySelector('.' + paramId + '-' + optionId);
+          if(optionImage) {
+            console.log('IMAGE FOUND! : ', optionImage);
+            if(formData[paramId] && formData[paramId].includes(optionId)) {
+              console.log('SPRAWDZAM CZY IMAGE FOUND');
+              // check if the option is default
+              if(!optionId) {
+                console.log('IMAGE == FALSE');
+                // remove class activ (visibility)
+                optionImage.classList.remove(classNames.menuProduct.imageVisible); 
+              } else {
+                console.log('IMAGE == TRUE');
+                // add class activ (visibility)
+                optionImage.classList.add(classNames.menuProduct.imageVisible);             
+              }
+            } else { 
+              // check if the option is not default
+              if(optionId) {
+                console.log('IMAGE == FALSE');
+                // remove class activ (visibility)
+                optionImage.classList.remove(classNames.menuProduct.imageVisible);
+              }
+            }
+          }
           
+
           // check if there is param with a name of paramId in formData and if it includes optionId
           if(formData[paramId] && formData[paramId].includes(optionId)) {
-            console.log("SPRAWDZAM CZY TRUE");
+            console.log('SPRAWDZAM CZY TRUE');
             // check if the option is default
             if(!optionId) {
               console.log('DEFAULT == FALSE');
