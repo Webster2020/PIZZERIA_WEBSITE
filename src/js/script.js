@@ -181,6 +181,7 @@
       thisProduct.cartButton.addEventListener('click', function(event){
         event.preventDefault();
         thisProduct.processOrder();
+        thisProduct.addToCart();
       });
     }
 
@@ -260,8 +261,12 @@
           //console.log('888888888888888888888888888888888888888888888888888888888888888888888888888888'); 
         }
       }
+      /* priceSingle NEW 9.4 */
+      thisProduct.priceSingle = price;
+
       /* multiply price bu amount NEW 9.1 */ 
       price *= thisProduct.amountWidget.value;
+      
       // update calculated price in the HTML
       thisProduct.priceElem.innerHTML = price;
     }
@@ -275,6 +280,64 @@
       thisProduct.amountWidgetElem.addEventListener('update', function() {
         thisProduct.processOrder();
       });
+    }
+
+    /* NEW METHOD 9.4 */
+    addToCart() {
+      const thisProduct = this;
+
+      app.cart.add(thisProduct.prepareCartProduct()); //maybe nawias? 
+    }
+
+    /* NEW METHOD 9.4 */
+    prepareCartProductParams() {
+      const thisProduct = this;
+    
+      const formData = utils.serializeFormToObject(thisProduct.form);
+
+      const params = {};
+
+      for(let paramId in thisProduct.data.params) {  
+        const param = thisProduct.data.params[paramId];
+        // console.log('param label: ', param.label);
+        // console.log('paramID: ', paramId);
+        // console.log('param: ',param);
+        params[paramId] = {
+          label: param.label,
+          options: {},
+        }
+        // for every option in this category
+        for(let optionId in param.options) { 
+
+          const option = param.options[optionId]; 
+          const optionSelected = formData[paramId] && formData[paramId].includes(optionId);
+
+          if(optionSelected) {
+            // option is selected!
+            // console.log('option label: ', option.label);
+            // console.log('optionId: ',optionId);
+            // console.log('option: ', option);
+            params[paramId].options[optionId] = option.label;
+          }  
+        }
+      }
+      //console.log('P-A-R-A-M-S:', params);
+      return params; 
+    }
+
+    /* NEW METHOD 9.4 */
+    prepareCartProduct() {
+      const thisProduct = this;
+
+      const productSummary = {
+        id: thisProduct.id,
+        name: thisProduct.data.name,
+        amount: thisProduct.amountWidget.value,
+        priceSingle: thisProduct.priceSingle,
+        price: thisProduct.priceSingle * thisProduct.amountWidget.value,
+        params: thisProduct.prepareCartProductParams(),
+      };
+      return productSummary; //maybe nawias?
     }
   }
 
@@ -366,6 +429,7 @@
       thisCart.dom = {};
       thisCart.dom.wrapper = element;
       thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger); //DO TEST !!!
+      thisCart.dom.productList = document.querySelector(select.cart.productList);
     }
     
     initActions() {
@@ -374,6 +438,21 @@
         console.log(event);
         thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive); //DO TEST !!!
       });
+    }
+
+    /* NEW METHOD 9.4 */
+    add(menuProduct) {
+      const thisCart = this;
+      
+      console.log('adding product: ', menuProduct);
+      /* generate HTML based on template */
+      const generatedHTML = templates.cartProduct(menuProduct);
+
+      const generatedDOM = utils.createDOMFromHTML(generatedHTML);
+      /* find menu container */
+      const cartContainer = document.querySelector(select.cart.productListu);
+      /* add element to menu */
+      thisCart.dom.productList.appendChild(generatedDOM);
     }
   }
 
@@ -397,7 +476,7 @@
       const cartElem = document.querySelector(select.containerOf.cart);
       thisApp.cart = new Cart(cartElem);
     },
-
+    
     init: function(){
       const thisApp = this;
       //console.log('*** App starting ***');
