@@ -41,6 +41,7 @@
       totalPrice: '.cart__total-price strong, .cart__order-total .cart__order-price-sum strong',
       subtotalPrice: '.cart__order-subtotal .cart__order-price-sum strong',
       deliveryFee: '.cart__order-delivery .cart__order-price-sum strong',
+      total: '.cart__order-total .cart__order-price-sum strong',
       form: '.cart__order',
       formSubmit: '.cart__order [type="submit"]',
       phone: '[name="phone"]',
@@ -432,6 +433,12 @@
       thisCart.dom.wrapper = element;
       thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger); //DO TEST !!!
       thisCart.dom.productList = document.querySelector(select.cart.productList);
+      /* NEW 9.7 */
+      thisCart.dom.deliveryFee = document.querySelector(select.cart.deliveryFee);
+      thisCart.dom.subtotalPrice = document.querySelector(select.cart.subtotalPrice);
+      thisCart.dom.totalPrice = document.querySelector(select.cart.totalPrice);
+      thisCart.dom.totalNumber = document.querySelector(select.cart.totalNumber);
+      thisCart.dom.total = document.querySelector(select.cart.total);
     }
     
     initActions() {
@@ -465,15 +472,15 @@
       thisCart.products.push(new CartProduct(menuProduct, generatedDOM));
       //console.log('thisCart.products', thisCart.products);
       //INFO: thisCart.products podobny do menuProduct ale zawiera wiecej informacji (np amountWidget i DOM)
-      
-      /* 9.6 to chyba zrobione na wyrost --->>. */
-      thisCart.dom.totalPrice = document.querySelector(select.cart.totalPrice);
 
-      console.log(thisCart.products.price);
+      /* 9.6 to chyba zrobione na wyrost --->>. */
+      //thisCart.dom.totalPrice = document.querySelector(select.cart.totalPrice); ok
+
+      //console.log(thisCart.products.price);
       /* total price of whole cart */
       thisCart.totalPrice += Number(menuProduct.price);
 
-      thisCart.dom.totalPrice.innerHTML = thisCart.totalPrice;
+      //thisCart.dom.totalPrice.innerHTML = thisCart.totalPrice;
       /* <<<----------------- */
       
       /* NEW METHOD 9.6  */
@@ -489,14 +496,20 @@
       for (let cartProduct of thisCart.products) {
         console.log('cartProduct in loop: ', cartProduct.price);
         totalNumber += Number(cartProduct.amount);
-        subtotalPrice += Number(cartProduct.price);
-        console.log('totalNumber:', totalNumber);
-        console.log('subtotalPrice:', subtotalPrice);
+        subtotalPrice += Number(cartProduct.price);   
       }
+      thisCart.dom.deliveryFee.innerHTML = 0;
       if (totalNumber > 0) {
         thisCart.totalPrice += deliveryFee;
+        thisCart.dom.deliveryFee.innerHTML = deliveryFee;
+        thisCart.dom.subtotalPrice.innerHTML = subtotalPrice;
+        console.log('subtotalPrice:', subtotalPrice);
+        thisCart.dom.totalPrice.innerHTML = Number(thisCart.totalPrice);
+        thisCart.dom.totalNumber.innerHTML = totalNumber;
+        console.log('totalNumber:', totalNumber);
+        thisCart.dom.total.innerHTML = Number(thisCart.totalPrice);
       }
-   }
+    }
   }
 
   /* 9.5 COMMENT: Podsumowując, chcemy, aby klasa Cart zajmowała się całym koszykiem, jego głównymi funkcjonalnościami, a klasa CartProduct pojedynczymi produktami, które się w nim znajdują. */
