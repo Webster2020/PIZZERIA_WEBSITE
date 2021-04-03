@@ -70,8 +70,8 @@
   const settings = {
     amountWidget: {
       defaultValue: 1,
-      defaultMin: 1,
-      defaultMax: 9,
+      defaultMin: 0,
+      defaultMax: 10,
     }, // CODE CHANGED
     // CODE ADDED START
     cart: {
@@ -153,7 +153,7 @@
         event.preventDefault();
         /* find active product (product that has active class) */     
         const activeProduct = document.querySelector('.product.active'); //classNames.menuProduct.wrapperActive
-        console.log('PRODUCT ACTIVE : ', activeProduct);
+        //console.log('PRODUCT ACTIVE : ', activeProduct);
         /* if there is active product and it's not thisProduct.element, remove class active from it */
         if (activeProduct !== null && activeProduct !== thisProduct.element) {
           activeProduct.classList.remove(classNames.menuProduct.wrapperActive);
@@ -196,7 +196,7 @@
       // set price to default price
       let price = thisProduct.data.price; //wszystko co jest w obiektach "price" w wartosciach kluczy w pliku data.js
       /* TO DELETE LATER */
-      //console.log('price: ', thisProduct.data.price);
+      //console.log('priceOfProduct: ', thisProduct.data.price);
       // for every category (param)...
       for(let paramId in thisProduct.data.params) { //petla po parametrach (kategoriach)
         // determine param value, e.g. paramId = 'toppings', param = { label: 'Toppings', type: 'checkboxes'... }
@@ -266,7 +266,7 @@
 
       /* multiply price bu amount NEW 9.1 */ 
       price *= thisProduct.amountWidget.value;
-      
+      //console.log('AmountWidgetValue:', thisProduct.amountWidget.value);
       // update calculated price in the HTML
       thisProduct.priceElem.innerHTML = price;
     }
@@ -305,7 +305,7 @@
         params[paramId] = {
           label: param.label,
           options: {},
-        }
+        };
         // for every option in this category
         for(let optionId in param.options) { 
 
@@ -345,9 +345,9 @@
   class AmountWidget {
     constructor(element) {
       const thisWidget = this;
-      console.log('<<--NEW AMOUNT WIDGET-->>');
-      console.log('AmountWidget: ', thisWidget);
-      console.log('constructor argument: ', element); 
+      //console.log('<<--NEW AMOUNT WIDGET-->>');
+      //console.log('AmountWidget: ', thisWidget);
+      //console.log('constructor argument: ', element); 
       //element = thisProduct.amountWidgetElem (from initAmountWidget)
       thisWidget.getElements(element);
       thisWidget.setValue(thisWidget.input.value);
@@ -362,10 +362,10 @@
       thisWidget.linkDecrease = thisWidget.element.querySelector(select.widgets.amount.linkDecrease);
       thisWidget.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
     }
-
+    /* 9.5.3 TU COS TRZEBA POMYSLEC NAD TYM, ZE OMIJA JEDYNKE PRZY ZMIANIE SZTUK */
     setValue(value) {
       const thisWidget = this;
-      console.log('setValue');
+      //console.log('setValue');
       const newValue = parseInt(value);
 
       thisWidget.value = settings.amountWidget.defaultValue;
@@ -383,10 +383,10 @@
         thisWidget.input.value = thisWidget.value;
       }
     }
-
+    /* 9.5.3 TU COS TRZEBA POMYSLEC NAD TYM, ZE OMIJA JEDYNKE PRZY ZMIANIE SZTUK */
     initActions() {
       const thisWidget = this;
-      console.log('initActions');
+      // console.log('initActions');
       thisWidget.input.addEventListener('change', function(event) {
         console.log(event);
         thisWidget.setValue(thisWidget.input.value);
@@ -416,11 +416,13 @@
     constructor(element) {
       const thisCart = this;
       
-      thisCart.product = [];
+      thisCart.products = [];
+      thisCart.totalPrice = 0;
       thisCart.getElements(element);
       thisCart.initActions();
       
       console.log('new Cart', thisCart);
+      console.log('new Cart products[]', thisCart.products);
     }
     
     getElements(element) {
@@ -441,18 +443,109 @@
     }
 
     /* NEW METHOD 9.4 */
+    //adding product (menuPrduct) to Cart
     add(menuProduct) {
       const thisCart = this;
-      
-      console.log('adding product: ', menuProduct);
+
+      //INFO: menuProduct (84line) to handlebar do kodu HTML danego produktu (np. pizza - tytul, obrazek, opcje, przyciski..)
+
+      //console.log('Adding product: ', menuProduct); 
+
       /* generate HTML based on template */
       const generatedHTML = templates.cartProduct(menuProduct);
-
+      //INFO: generatedHTML to tekst podobny do HTML zamówienia, który jest wyswietlany w koszyku
       const generatedDOM = utils.createDOMFromHTML(generatedHTML);
-      /* find menu container */
-      const cartContainer = document.querySelector(select.cart.productListu);
+      //INFO: generatedDOM to HTML zamówienia, który jest wyswietlany w koszyku
+
       /* add element to menu */
+      //console.log('cartContainer:', cartContainer);  
       thisCart.dom.productList.appendChild(generatedDOM);
+
+      /* NEW 9.5 */
+      thisCart.products.push(new CartProduct(menuProduct, generatedDOM));
+      //console.log('thisCart.products', thisCart.products);
+      //INFO: thisCart.products podobny do menuProduct ale zawiera wiecej informacji (np amountWidget i DOM)
+      
+      /* 9.6 to chyba zrobione na wyrost --->>. */
+      thisCart.dom.totalPrice = document.querySelector(select.cart.totalPrice);
+
+      console.log(thisCart.products.price);
+      /* total price of whole cart */
+      thisCart.totalPrice += Number(menuProduct.price);
+
+      thisCart.dom.totalPrice.innerHTML = thisCart.totalPrice;
+      /* <<<----------------- */
+      
+      /* NEW METHOD 9.6  */
+      thisCart.update();
+    }
+    /* NEW METHOD 9.6  */
+    update() {
+      const thisCart = this;
+      console.log('???');
+      const deliveryFee = settings.cart.defaultDeliveryFee;
+      let totalNumber = 0;
+      let subtotalPrice = 0;
+      for (let cartProduct of thisCart.products) {
+        console.log('cartProduct in loop: ', cartProduct.price);
+        totalNumber += Number(cartProduct.amount);
+        subtotalPrice += Number(cartProduct.price);
+        console.log('totalNumber:', totalNumber);
+        console.log('subtotalPrice:', subtotalPrice);
+      }
+      if (totalNumber > 0) {
+        thisCart.totalPrice += deliveryFee;
+      }
+   }
+  }
+
+  /* 9.5 COMMENT: Podsumowując, chcemy, aby klasa Cart zajmowała się całym koszykiem, jego głównymi funkcjonalnościami, a klasa CartProduct pojedynczymi produktami, które się w nim znajdują. */
+  
+  /* NEW CLASS 9.5 */
+  class CartProduct {
+    constructor(menuProduct, element) {
+      const thisCartProduct = this;
+      /* type this all props of menuProduct - how?? check all props of menuProduct in console */
+      thisCartProduct.id = menuProduct.id;
+      thisCartProduct.name = menuProduct.name;
+      thisCartProduct.params = menuProduct.params;
+      thisCartProduct.amount = menuProduct.amount; //ATTENTION !! 9.5.3. !! -->>  to jest ilosc danego produktu dodawanego do koszyka
+
+      thisCartProduct.price = menuProduct.price; //ATTENTION !! 9.5.3. !! -->>  to jest wartosc danego produktu dodawanego do koszyka
+
+      //console.log('Wartosc produktu: ', thisCartProduct.price);
+
+      thisCartProduct.priceSingle = menuProduct.priceSingle;   
+      
+      thisCartProduct.getElements(element); // do I need it?
+      /* NEW METHOD 9.5.3 !!! */
+      thisCartProduct.initAmountWidget();
+    }
+    
+    getElements(element) {
+      const thisCartProduct = this;
+      
+      //console.log('thisCartProduct: ', thisCartProduct);
+      
+      thisCartProduct.dom = {};
+      thisCartProduct.dom.wrapper = element;
+      thisCartProduct.dom.amountWidget = thisCartProduct.dom.wrapper.querySelector(select.cartProduct.amountWidget);
+      thisCartProduct.dom.price = thisCartProduct.dom.wrapper.querySelector(select.cartProduct.price);
+      thisCartProduct.dom.edit = thisCartProduct.dom.wrapper.querySelector(select.cartProduct.edit);
+      thisCartProduct.dom.remove = thisCartProduct.dom.wrapper.querySelector(select.cartProduct.remove);
+    }
+
+    /* NEW METHOD 9.5.3 !!! */
+    initAmountWidget() {
+      const thisCartProduct = this;
+      /* cretaion new properity of instance of class Product */
+      thisCartProduct.amountWidget = new AmountWidget(thisCartProduct.dom.amountWidget); // 9.5.3 SOMEWHERE THERE IS AVAILABLE AMOUNT VALUE ??
+      thisCartProduct.dom.amountWidget.addEventListener('update', function() {
+        /* UPDATE COST OF AMOUNT OF PRODUCT */
+        thisCartProduct.amount = thisCartProduct.dom.amountWidget.querySelector('input').value;
+        thisCartProduct.price = Number(thisCartProduct.amount) * Number(thisCartProduct.priceSingle);
+        thisCartProduct.dom.price.innerHTML = thisCartProduct.price;
+      });
     }
   }
 
