@@ -407,7 +407,11 @@
     announce() {
       const thisWidget = this;
 
-      const event = new Event('update');
+      /* NEW 9.8 */
+      //const event = new Event('update');
+      const event = new CustomEvent('update', {
+        buubles: true
+      });
       thisWidget.element.dispatchEvent(event);
     }
   }
@@ -441,11 +445,41 @@
       thisCart.dom.total = document.querySelector(select.cart.total);
     }
     
+    /* NEW METHOD 9.8 */
+    remove(product) {
+      const thisCart = this;
+
+      console.log(product);
+      /* delete HTML of product */
+      /* find index of removing product from cart */ 
+      const indexOfProduct = thisCart.products.indexOf(product);
+      console.log(indexOfProduct);
+      /* delete HTML of product */
+      console.log('html', thisCart.dom.productList.querySelector(`ul.cart__order-summary>li:nth-of-type(${indexOfProduct+1})`));
+      const productToDeleteHTML = thisCart.dom.productList.querySelector(`ul.cart__order-summary>li:nth-of-type(${indexOfProduct+1})`);
+      productToDeleteHTML.remove();
+
+      /* delete information about curent product from table thisCart.products */
+      console.log('this product', product);
+      console.log('table cart product', thisCart.products);
+      thisCart.products.splice(indexOfProduct, indexOfProduct + 1);
+      console.log('table cart product AFTER REMOVE', thisCart.products);
+      //numbers update
+      thisCart.update();
+    }
+
     initActions() {
       const thisCart = this;
       thisCart.dom.toggleTrigger.addEventListener('click', function(event) {
         console.log(event);
         thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive); //DO TEST !!!
+      });
+      /* NEW 9.8 */
+      thisCart.dom.productList.addEventListener('update', function() {
+        thisCart.update();
+      });
+      thisCart.dom.productList.addEventListener('remove', function(event) {
+        thisCart.remove(event.detail.cartProduct);
       });
     }
 
@@ -488,8 +522,9 @@
     }
     /* NEW METHOD 9.6  */
     update() {
+      console.log('UPDATE RUN!');
       const thisCart = this;
-      console.log('???');
+      console.log('cartProductDOm', thisCart.dom);
       const deliveryFee = settings.cart.defaultDeliveryFee;
       let totalNumber = 0;
       let subtotalPrice = 0;
@@ -500,14 +535,14 @@
       }
       thisCart.dom.deliveryFee.innerHTML = 0;
       if (totalNumber > 0) {
-        thisCart.totalPrice += deliveryFee;
+        //thisCart.totalPrice += deliveryFee;
         thisCart.dom.deliveryFee.innerHTML = deliveryFee;
         thisCart.dom.subtotalPrice.innerHTML = subtotalPrice;
         console.log('subtotalPrice:', subtotalPrice);
-        thisCart.dom.totalPrice.innerHTML = Number(thisCart.totalPrice);
+        thisCart.dom.totalPrice.innerHTML = Number(thisCart.totalPrice + deliveryFee);
         thisCart.dom.totalNumber.innerHTML = totalNumber;
         console.log('totalNumber:', totalNumber);
-        thisCart.dom.total.innerHTML = Number(thisCart.totalPrice);
+        thisCart.dom.total.innerHTML = Number(thisCart.totalPrice + deliveryFee);
       }
     }
   }
@@ -533,6 +568,8 @@
       thisCartProduct.getElements(element); // do I need it?
       /* NEW METHOD 9.5.3 !!! */
       thisCartProduct.initAmountWidget();
+      /* NEW METHOD 9.8 */
+      thisCartProduct.initActions();
     }
     
     getElements(element) {
@@ -558,6 +595,34 @@
         thisCartProduct.amount = thisCartProduct.dom.amountWidget.querySelector('input').value;
         thisCartProduct.price = Number(thisCartProduct.amount) * Number(thisCartProduct.priceSingle);
         thisCartProduct.dom.price.innerHTML = thisCartProduct.price;
+      });
+    }
+
+    /* NEW METHOD 9.8 */
+    remove() {
+      const thisCartProduct = this;
+
+      const event = new CustomEvent('remove', {
+        bubbles: true,
+        detail: {
+          cartProduct: thisCartProduct,
+        },
+      });
+
+      thisCartProduct.dom.wrapper.dispatchEvent(event);
+      console.log('remove click');
+    }
+
+    /* NEW METHOD 9.8 */
+    initActions() {
+      const thisCartProduct = this;
+
+      thisCartProduct.dom.edit.addEventListener('click', function(event) {
+        event.preventDefault();
+      });
+      thisCartProduct.dom.remove.addEventListener('click', function(event) {
+        event.preventDefault();
+        thisCartProduct.remove();
       });
     }
   }
