@@ -71,12 +71,18 @@
   const settings = {
     amountWidget: {
       defaultValue: 1,
-      defaultMin: 0,
-      defaultMax: 10,
+      defaultMin: 1,
+      defaultMax: 9,
     }, // CODE CHANGED
     // CODE ADDED START
     cart: {
       defaultDeliveryFee: 20,
+    },
+    /* NEW 9.8 */
+    db: {
+      url: '//localhost:3131',
+      product: 'product',
+      order: 'order',
     },
     // CODE ADDED END
   };
@@ -264,9 +270,14 @@
       }
       /* priceSingle NEW 9.4 */
       thisProduct.priceSingle = price;
-
-      /* multiply price bu amount NEW 9.1 */ 
+      
+      /* multiply price bu amount NEW 9.1 */
+      if (thisProduct.amountWidget.value > 10) {
+        thisProduct.amountWidget.value = 10;
+      } 
       price *= thisProduct.amountWidget.value;
+      
+      //console.log('price',price);
       //console.log('AmountWidgetValue:', thisProduct.amountWidget.value);
       // update calculated price in the HTML
       thisProduct.priceElem.innerHTML = price;
@@ -279,6 +290,7 @@
       thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
 
       thisProduct.amountWidgetElem.addEventListener('update', function() {
+        //console.log('UPDATE AMOUNT WIDGET');
         thisProduct.processOrder();
       });
     }
@@ -374,15 +386,18 @@
       if (thisWidget.value !== newValue && !isNaN(newValue)) {
         //if (thisWidget.value > settings.amountWidget.defaultMin || thisWidget.value < settings.amountWidget.defaultMax)
         thisWidget.value = newValue;
-        thisWidget.announce();
+        
       }
       if (thisWidget.value > settings.amountWidget.defaultMax) {
         thisWidget.input.value = parseInt(10);
+        thisWidget.value = parseInt(10);
       } else if (thisWidget.value < settings.amountWidget.defaultMin) {
         thisWidget.input.value = parseInt(0);
+        thisWidget.value = parseInt(0);
       } else {
         thisWidget.input.value = thisWidget.value;
       }
+      thisWidget.announce();
     }
     /* 9.5.3 TU COS TRZEBA POMYSLEC NAD TYM, ZE OMIJA JEDYNKE PRZY ZMIANIE SZTUK */
     initActions() {
@@ -391,23 +406,26 @@
       thisWidget.input.addEventListener('change', function(event) {
         console.log(event);
         thisWidget.setValue(thisWidget.input.value);
+        //console.log(thisWidget.input.value);
       });
 
       thisWidget.linkDecrease.addEventListener('click', function(event) {
         event.preventDefault();
         thisWidget.setValue(parseInt(thisWidget.input.value) - 1);
+        //console.log(thisWidget.input.value);
       });
 
       thisWidget.linkIncrease.addEventListener('click', function(event) {
         event.preventDefault();
         thisWidget.setValue(parseInt(thisWidget.input.value) + 1);
+        //console.log(thisWidget.input.value);
       });
     }
 
     announce() {
       const thisWidget = this;
 
-      /* NEW 9.8 */
+      /* NEW 9.5.8 */
       //const event = new Event('update');
       const event = new CustomEvent('update', {
         buubles: true
@@ -426,8 +444,8 @@
       thisCart.getElements(element);
       thisCart.initActions();
       
-      console.log('new Cart', thisCart);
-      console.log('new Cart products[]', thisCart.products);
+      //console.log('new Cart', thisCart);
+      //console.log('new Cart products[]', thisCart.products);
     }
     
     getElements(element) {
@@ -449,21 +467,21 @@
     remove(product) {
       const thisCart = this;
 
-      console.log(product);
+      //console.log(product);
       /* delete HTML of product */
       /* find index of removing product from cart */ 
       const indexOfProduct = thisCart.products.indexOf(product);
-      console.log(indexOfProduct);
+      //console.log(indexOfProduct);
       /* delete HTML of product */
-      console.log('html', thisCart.dom.productList.querySelector(`ul.cart__order-summary>li:nth-of-type(${indexOfProduct+1})`));
+      //console.log('html', thisCart.dom.productList.querySelector(`ul.cart__order-summary>li:nth-of-type(${indexOfProduct+1})`));
       const productToDeleteHTML = thisCart.dom.productList.querySelector(`ul.cart__order-summary>li:nth-of-type(${indexOfProduct+1})`);
       productToDeleteHTML.remove();
 
       /* delete information about curent product from table thisCart.products */
-      console.log('this product', product);
-      console.log('table cart product', thisCart.products);
+      //console.log('this product', product);
+      //console.log('table cart product', thisCart.products);
       thisCart.products.splice(indexOfProduct, indexOfProduct + 1);
-      console.log('table cart product AFTER REMOVE', thisCart.products);
+      //console.log('table cart product AFTER REMOVE', thisCart.products);
       //numbers update
       thisCart.update();
     }
@@ -471,7 +489,7 @@
     initActions() {
       const thisCart = this;
       thisCart.dom.toggleTrigger.addEventListener('click', function(event) {
-        console.log(event);
+        //console.log(event);
         thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive); //DO TEST !!!
       });
       /* NEW 9.8 */
@@ -522,28 +540,34 @@
     }
     /* NEW METHOD 9.6  */
     update() {
-      console.log('UPDATE RUN!');
+      //console.log('CART UPDATE RUN!');
       const thisCart = this;
-      console.log('cartProductDOm', thisCart.dom);
-      const deliveryFee = settings.cart.defaultDeliveryFee;
+      //console.log('cartProductDOm', thisCart.dom);
+      let deliveryFee = settings.cart.defaultDeliveryFee;
       let totalNumber = 0;
       let subtotalPrice = 0;
       for (let cartProduct of thisCart.products) {
-        console.log('cartProduct in loop: ', cartProduct.price);
+        //console.log('cartProduct PRICE in loop: ', cartProduct.price);
         totalNumber += Number(cartProduct.amount);
         subtotalPrice += Number(cartProduct.price);   
       }
       thisCart.dom.deliveryFee.innerHTML = 0;
-      if (totalNumber > 0) {
-        //thisCart.totalPrice += deliveryFee;
-        thisCart.dom.deliveryFee.innerHTML = deliveryFee;
-        thisCart.dom.subtotalPrice.innerHTML = subtotalPrice;
-        console.log('subtotalPrice:', subtotalPrice);
-        thisCart.dom.totalPrice.innerHTML = Number(thisCart.totalPrice + deliveryFee);
-        thisCart.dom.totalNumber.innerHTML = totalNumber;
-        console.log('totalNumber:', totalNumber);
-        thisCart.dom.total.innerHTML = Number(thisCart.totalPrice + deliveryFee);
+
+      if (!(totalNumber > 0)) {
+        deliveryFee = 0;
+        thisCart.totalPrice = 0;
       }
+      thisCart.totalPrice = subtotalPrice + deliveryFee;
+
+      thisCart.dom.deliveryFee.innerHTML = deliveryFee;
+      //console.log('deliveryFee:', deliveryFee);
+      thisCart.dom.subtotalPrice.innerHTML = subtotalPrice;
+      //console.log('subtotalPrice:', subtotalPrice);
+      thisCart.dom.totalPrice.innerHTML = Number(thisCart.totalPrice);
+      thisCart.dom.totalNumber.innerHTML = totalNumber;
+      //console.log('totalNumber:', totalNumber);
+      thisCart.dom.total.innerHTML = Number(thisCart.totalPrice);
+      //console.log('totalPrice:', thisCart.totalPrice);     
     }
   }
 
@@ -568,7 +592,7 @@
       thisCartProduct.getElements(element); // do I need it?
       /* NEW METHOD 9.5.3 !!! */
       thisCartProduct.initAmountWidget();
-      /* NEW METHOD 9.8 */
+      /* NEW METHOD 9.5.8 */
       thisCartProduct.initActions();
     }
     
@@ -610,7 +634,7 @@
       });
 
       thisCartProduct.dom.wrapper.dispatchEvent(event);
-      console.log('remove click');
+      //console.log('remove click');
     }
 
     /* NEW METHOD 9.8 */
@@ -630,14 +654,39 @@
   const app = {
     initData: function() {
       const thisApp = this;
+      /* 9.8xxx */
+      // this line to commented
       thisApp.data = dataSource;
+      /* 9.8xxx */
+      // this 2 lines to add
+      //thisApp.data = {}; 
+      //const url = settings.db.url + '/' + settings.db.product;
+      /*
+      fetch(url)
+        .then(function(rawResponse){
+          return rawResponse.json();
+        })
+        .then(function(parsedResponse){
+          console.log('parsedResponse', parsedResponse);
+         
+          // save parseResponse as thisApp.data.products 
+          thisApp.data.products = parseResponse;
+          // execute initMenu method
+          thisApp.initMenu();
+        });
+      */
     },
 
     initMenu: function() {
       const thisApp = this;
       //console.log('testData: ', thisApp.data);
       for(let productData in thisApp.data.products) {
+        /* NEW 9.8xxx */
+        //line to commented
         new Product(productData, thisApp.data.products[productData]); // (key, value of key)
+        /* NEW 9.8xxx */
+        //line to add
+        //new Product(thisApp.data.products[productData].id, thisApp.data.products[productData]); 
       }
     },
 
@@ -650,13 +699,10 @@
     
     init: function(){
       const thisApp = this;
-      //console.log('*** App starting ***');
-      //console.log('thisApp:', thisApp);
-      //console.log('classNames:', classNames);
-      //console.log('settings:', settings);
-      //console.log('templates:', templates);
 
       thisApp.initData();
+      /* 9.8xxx */
+      //line to commented
       thisApp.initMenu();
       /* NEW METHOD 9.3 */
       thisApp.initCart();
