@@ -3,6 +3,7 @@
 import {settings, select, classNames} from './settings.js';
 import Product from './components/Product.js';
 import Cart from './components/Cart.js';
+import Booking from './components/Booking.js';
 
 const app = {
   initPages: function() {
@@ -102,13 +103,23 @@ const app = {
       app.cart.add(event.detail.product);
     });
   },
-    
+  // NEW METHOD 10.5
+  initBooking: function() {
+    const thisApp = this;
+
+    thisApp.bookingContainer = document.querySelector(select.containerOf.booking);
+    console.log('xx', select.containerOf.booking);
+    console.log('yy', thisApp.bookingContainer);
+    thisApp.booking = new Booking(thisApp.bookingContainer);
+  }, 
+
   init: function(){
     const thisApp = this;
 
     thisApp.initData();
     thisApp.initCart();
     thisApp.initPages();
+    thisApp.initBooking();
   },
 };
  

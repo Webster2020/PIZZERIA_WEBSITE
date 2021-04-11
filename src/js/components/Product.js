@@ -22,7 +22,7 @@ class Product {
     /* generate HTML based on template */
     const generateHTML = templates.menuProduct(thisProduct.data);
     /* create element using utils.createElementFromHTML */
-
+    
     /* << IMPORTANT >> adding new properity calls "element" to instance of Product; it is a part of HTML code inside tag "articel" */
     thisProduct.element = utils.createDOMFromHTML(generateHTML);
 
