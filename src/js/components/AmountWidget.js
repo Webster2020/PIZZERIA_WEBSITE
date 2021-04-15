@@ -1,82 +1,67 @@
 import {settings, select} from '../settings.js';
+import BaseWidget from './BaseWidget.js';
 
-class AmountWidget {
+class AmountWidget extends BaseWidget{
   constructor(element) {
+    super(element, settings.amountWidget.defaultValue);
     const thisWidget = this;
     //console.log('<<--NEW AMOUNT WIDGET-->>');
-    //console.log('AmountWidget: ', thisWidget);
-    //console.log('constructor argument: ', element); 
+    console.log('AmountWidget: ', thisWidget);
+    console.log('constructor argument: ', element); 
     //element = thisProduct.amountWidgetElem (from initAmountWidget)
     thisWidget.getElements(element);
-    thisWidget.setValue(thisWidget.input.value);
+
+    //thisWidget.setValue(thisWidget.dom.input.value); BASEWIDGET
     thisWidget.initActions();
   }
 
-  getElements(element) {
+  //removing 'element' from argument
+  getElements() {
     const thisWidget = this;
 
-    thisWidget.element = element;
-    thisWidget.input = thisWidget.element.querySelector(select.widgets.amount.input);
-    thisWidget.linkDecrease = thisWidget.element.querySelector(select.widgets.amount.linkDecrease);
-    thisWidget.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
+    //thisWidget.dom.wrapper = element; BASEWIDGET
+    thisWidget.dom.input = thisWidget.dom.wrapper.querySelector(select.widgets.amount.input);
+    thisWidget.dom.linkDecrease = thisWidget.dom.wrapper.querySelector(select.widgets.amount.linkDecrease);
+    thisWidget.dom.linkIncrease = thisWidget.dom.wrapper.querySelector(select.widgets.amount.linkIncrease);
   }
-  /* 9.5.3 TU COS TRZEBA POMYSLEC NAD TYM, ZE OMIJA JEDYNKE PRZY ZMIANIE SZTUK */
-  setValue(value) {
+  
+  //NEW METHOD 11.1
+  isValid(value) {
+    return !isNaN(value)
+    && value >= settings.amountWidget.defaultMin
+    && value <= settings.amountWidget.defaultMax;
+  }
+
+  //NEW METHOD 11.1
+  renderValue() {
     const thisWidget = this;
-    console.log('setValue');
-    const newValue = parseInt(value);
 
-    thisWidget.value = settings.amountWidget.defaultValue;
-
-    if (thisWidget.value !== newValue && !isNaN(newValue)) {
-      //if (thisWidget.value > settings.amountWidget.defaultMin || thisWidget.value < settings.amountWidget.defaultMax)
-      thisWidget.value = newValue;
-      
-    }
-    if (thisWidget.value > settings.amountWidget.defaultMax) {
-      thisWidget.input.value = parseInt(10);
-      thisWidget.value = parseInt(10);
-    } else if (thisWidget.value < settings.amountWidget.defaultMin) {
-      thisWidget.input.value = parseInt(0);
-      thisWidget.value = parseInt(0);
-    } else {
-      thisWidget.input.value = thisWidget.value;
-    }
-    thisWidget.announce();
+    thisWidget.dom.input.value = thisWidget.value;
   }
+
   /* 9.5.3 TU COS TRZEBA POMYSLEC NAD TYM, ZE OMIJA JEDYNKE PRZY ZMIANIE SZTUK */
   initActions() {
     const thisWidget = this;
     // console.log('initActions');
-    thisWidget.input.addEventListener('change', function(event) {
+    thisWidget.dom.input.addEventListener('change', function(event) {
       console.log(event);
-      thisWidget.setValue(thisWidget.input.value);
-      //console.log(thisWidget.input.value);
+      thisWidget.value = thisWidget.dom.input.value;
+      //console.log(thisWidget.dom.input.value);
     });
 
-    thisWidget.linkDecrease.addEventListener('click', function(event) {
+    thisWidget.dom.linkDecrease.addEventListener('click', function(event) {
       event.preventDefault();
-      thisWidget.setValue(parseInt(thisWidget.input.value) - 1);
-      //console.log(thisWidget.input.value);
+      thisWidget.setValue(parseInt(thisWidget.dom.input.value) - 1);
+      //console.log(thisWidget.dom.input.value);
     });
 
-    thisWidget.linkIncrease.addEventListener('click', function(event) {
+    thisWidget.dom.linkIncrease.addEventListener('click', function(event) {
       event.preventDefault();
-      thisWidget.setValue(parseInt(thisWidget.input.value) + 1);
-      //console.log(thisWidget.input.value);
+      thisWidget.setValue(parseInt(thisWidget.dom.input.value) + 1);
+      //console.log(thisWidget.dom.input.value);
     });
   }
 
-  announce() {
-    const thisWidget = this;
-
-    /* NEW 9.5.8 */
-    //const event = new Event('update');
-    const event = new CustomEvent('update', {
-      bubbles: true
-    });
-    thisWidget.element.dispatchEvent(event);
-  }
 }
 
 export default AmountWidget;
