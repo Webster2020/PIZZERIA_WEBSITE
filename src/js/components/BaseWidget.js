@@ -79,6 +79,8 @@ class BaseWidget {
       bubbles: true
     });
     thisWidget.dom.wrapper.dispatchEvent(event);
+    //console.log('HALLLLOOO !!!');
+
   }
 }
 
