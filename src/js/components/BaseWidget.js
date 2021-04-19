@@ -1,5 +1,3 @@
-import {settings} from '../settings.js';
-
 class BaseWidget {
   constructor(wrapperElement, initialValue) {
     const thisWidget = this;
@@ -21,7 +19,7 @@ class BaseWidget {
    
     const newValue = thisWidget.parseValue(value);
 
-    thisWidget.correctValue = settings.amountWidget.defaultValue;
+    //thisWidget.correctValue = settings.amountWidget.defaultValue;
 
     if (thisWidget.correctValue !== newValue && thisWidget.isValid(newValue)) {
       //if (thisWidget.correctValue > settings.amountWidget.defaultMin || thisWidget.correctValue < settings.amountWidget.defaultMax)
@@ -30,7 +28,8 @@ class BaseWidget {
     }
 
     thisWidget.renderValue();
-    thisWidget.dom.input.value = thisWidget.correctValue;
+    
+    //thisWidget.dom.input.value = thisWidget.correctValue;
 
     /*
     if (thisWidget.correctValue > settings.amountWidget.defaultMax) {

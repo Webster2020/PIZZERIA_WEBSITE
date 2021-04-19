@@ -188,10 +188,10 @@ class Booking {
     //console.log(thisBooking.dom.address);
     
     thisBooking.dom.starterWater = document.querySelector(select.booking.starterWater);
-    console.log(thisBooking.dom.starterWater.checked);
+    //console.log(thisBooking.dom.starterWater.checked);
     
     thisBooking.dom.starterBread = document.querySelector(select.booking.starterBread);
-    console.log(thisBooking.dom.starterBread.checked);
+    //console.log(thisBooking.dom.starterBread.checked);
 
   //   thisBooking.dom.starters = document.querySelectorAll(select.booking.starters);
   //   console.log(thisBooking.dom.starters);
@@ -211,19 +211,19 @@ class Booking {
       
       thisBooking.updateDOM();
 
-      console.log('BEFORE thisBooking.tableSelected', typeof thisBooking.tableSelected);
-      console.log('BEFORE thisBooking.table', thisBooking.table);
+      //console.log('BEFORE thisBooking.tableSelected', typeof thisBooking.tableSelected);
+      //console.log('BEFORE thisBooking.table', thisBooking.table);
 
       if (thisBooking.tableSelected != '') {
         thisBooking.tableSelected.classList.remove('selected');
         thisBooking.tableSelected = '';
         thisBooking.table = '';
       } else {
-        console.log('nothing selected');
+        //console.log('nothing selected');
       }
 
-      console.log('AFTER thisBooking.tableSelected', typeof thisBooking.tableSelected);
-      console.log('AFTER thisBooking.table', thisBooking.table);
+      //console.log('AFTER thisBooking.tableSelected', typeof thisBooking.tableSelected);
+      //console.log('AFTER thisBooking.table', thisBooking.table);
 
       
     });
@@ -288,10 +288,7 @@ class Booking {
       table: Number(thisBooking.table), 
       duration: thisBooking.hoursAmount.correctValue,
       ppl: thisBooking.peopleAmount.correctValue,
-      starters: [
-                thisBooking.dom.starterWater.checked ? 'water' : '', 
-                thisBooking.dom.starterBread.checked ? 'bread' : '',
-                ],
+      starters: [thisBooking.dom.starterWater.checked ? 'water' : '', thisBooking.dom.starterBread.checked ? 'bread' : ''],
       phone: thisBooking.dom.phone.value,
       address: thisBooking.dom.address.value,
     };

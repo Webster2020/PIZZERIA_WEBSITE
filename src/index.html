@@ -7,9 +7,12 @@
   <title>Pizzeria</title>
   <link href="https://fonts.googleapis.com/css?family=Lato:400,300i,700%7COswald:300,500,700&amp;subset=latin-ext" rel="stylesheet">
   <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <link rel="stylesheet" href="vendor/range-slider.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
   <link rel="stylesheet" href="css/style.css">
+
 </head>
 <body>
 
@@ -64,7 +67,124 @@
 
   <div id="pages">
     <section id="home">
-      <div id="home-container" class="home container"></div>
+      <div id="home-container" class="home container">
+        <div class="home-wrapper">
+          <div class="home-row">
+            <div class="home-image">
+              <img src="images/home/pizza-1.jpg">
+              <div class="home-image-title">
+                <h1>ORDER</h1>
+              </div>
+              <div class="home-image-subtitle active">
+                <h2>Order what ever You want!</h2>
+              </div>
+            </div>
+            
+            <div class="home-image">
+              <img src="images/home/pizza-2.jpg">   
+              <div class="home-image-title">
+                <h1>BOOKING TABLE</h1>
+              </div>
+              <div class="home-image-subtitle active">
+                <h2>Book the best table!</h2>
+              </div>
+            </div>
+            
+          </div>
+          <div class="home-row">
+            <div class="home-hours">
+              <h1>OPENING HOURS</h1>
+              <h2>TUE-SUN, 12pm-12am</h2>
+            </div>
+          </div>
+        </div>
+
+        <div class="carousel" data-flickity='{ "autoPlay": 3000 }'>
+          <div class="carousel-cell">
+            <div class="carousel-content">
+              <div class="carousel-content-left">
+                <img src="images/home/pizza-3.jpg">
+              </div>
+              <div class="carousel-content-right">
+                <h1>AMAZING SERVICE!</h1>
+                <h3>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vitae nulla tempus, volutpat nulla nec, tristique odio. Vestibulum volutpat ex at dui molestie ullamcorper. Duis commodo maximus arcu, id ornare justo auctor ut.</h3>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-cell">
+            <div class="carousel-content">
+              <div class="carousel-content-left">
+                <img src="images/home/pizza-3.jpg">
+              </div>
+              <div class="carousel-content-right">
+                <h1>BEST PIZZA!</h1>
+                <h3>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vitae nulla tempus, volutpat nulla nec, tristique odio. Vestibulum volutpat ex at dui molestie ullamcorper. Duis commodo maximus arcu, id ornare justo auctor ut.</h3>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-cell">
+            <div class="carousel-content">
+              <div class="carousel-content-left">
+                <img src="images/home/pizza-3.jpg">
+              </div>
+              <div class="carousel-content-right">
+                <h1>LOW PRICES!</h1>
+                <h3>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque vitae nulla tempus, volutpat nulla nec, tristique odio. Vestibulum volutpat ex at dui molestie ullamcorper. Duis commodo maximus arcu, id ornare justo auctor ut.</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="home-wrapper">
+          <div class="home-gallery">
+            <div class="home-row gallery-row">
+              <div class="home-image">
+                <img src="images/home/pizza-4.jpg">
+                <div class="home-image-icon">
+                  <a href="https://wp.pl" target="_blank"><i class="fas fa-heart"></i></a>
+                </div>
+              </div>
+              <div class="home-image">
+                <img src="images/home/pizza-5.jpg">
+                <div class="home-image-icon">
+                  <a href="https://wp.pl" target="_blank"><i class="fas fa-heart"></i></a>
+                </div>
+              </div>
+              <div class="home-image">
+                <img src="images/home/pizza-6.jpg">
+                <div class="home-image-icon">
+                  <a href="https://wp.pl" target="_blank"><i class="fas fa-heart"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="home-row gallery-row">
+              <div class="home-image">
+                <img src="images/home/pizza-7.jpg">
+                <div class="home-image-icon">
+                  <a href="https://wp.pl" target="_blank"><i class="fas fa-heart"></i></a>
+                </div>
+              </div>
+              <div class="home-image">
+                <img src="images/home/pizza-8.jpg">
+                <div class="home-image-icon">
+                  <a href="https://wp.pl" target="_blank"><i class="fas fa-heart"></i></a>
+                </div>
+              </div>
+              <div class="home-image">
+                <img src="images/home/pizza-9.jpg">
+                <div class="home-image-icon">
+                  <a href="https://wp.pl" target="_blank"><i class="fas fa-heart"></i></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="home-wrapper">
+          <div class="home-link">
+            <a href="https://instagram.com" target="_blank">View more on instagram</a>
+          </div>
+        </div>
+      </div>
     </section>
     <section id="order">
       <div id="product-list" class="product-list container"></div>
@@ -252,6 +372,10 @@
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
   <script src="vendor/range-slider.min.js"></script>
+
+  <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+
+  <script src="js/components/Home.js"></script>
 
   <!-- add ' type="module" ' - it is info for browser, app.js is entering file for browser -->
   <script src="js/app.js" type="module"></script>

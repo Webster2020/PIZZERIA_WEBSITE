@@ -25,8 +25,9 @@ const app = {
 
     const idFromHash = window.location.hash.replace('#/', '');
 
+    /*
     let pageMatchingHash = thisApp.pages[0].id;
-    //console.log(pageMatchingHash); 
+    console.log(pageMatchingHash); 
     
     for (let page of thisApp.pages) {
       if (page.id == idFromHash) {
@@ -34,7 +35,8 @@ const app = {
         break;
       }
     }
-
+    */
+   
     thisApp.activatePage(idFromHash);
 
     for (let link of thisApp.navLinks) {
