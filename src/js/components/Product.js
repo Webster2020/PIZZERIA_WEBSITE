@@ -139,21 +139,14 @@ class Product {
           }
         }
         
-
         // check if there is param with a name of paramId in formData and if it includes optionId
         if(formData[paramId] && formData[paramId].includes(optionId)) {
           // check if the option is default
-          if(!optionId) {
-          } else {
-              
+          if(optionId) {     
             // reduce price variable
             price += option.price;
           }
-        } else { 
-          // check if the option is not default
-          if(optionId) {
-          }
-        }
+        } 
       }
     }
     /* priceSingle NEW 9.4 */
