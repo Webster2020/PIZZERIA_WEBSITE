@@ -30,19 +30,6 @@ class BaseWidget {
     thisWidget.renderValue();
     
     //thisWidget.dom.input.value = thisWidget.correctValue;
-
-    /*
-    if (thisWidget.correctValue > settings.amountWidget.defaultMax) {
-      thisWidget.dom.input.value = parseInt(10);
-      thisWidget.correctValue = parseInt(10);
-    } else if (thisWidget.correctValue < settings.amountWidget.defaultMin) {
-      thisWidget.dom.input.value = parseInt(0);
-      thisWidget.correctValue = parseInt(0);
-    } else {
-      thisWidget.dom.input.value = thisWidget.correctValue;
-    }
-    thisWidget.announce();
-    */
   }
  
   //NEW METHOD 11.1
@@ -78,8 +65,6 @@ class BaseWidget {
       bubbles: true
     });
     thisWidget.dom.wrapper.dispatchEvent(event);
-    //console.log('HALLLLOOO !!!');
-
   }
 }
 

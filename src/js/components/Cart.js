@@ -8,13 +8,8 @@ class Cart {
     
     thisCart.products = [];
     thisCart.totalPrice = 0;
-    //thisCart.subtotalPrice = 0;
-    //thisCart.totalNumber = 0;
     thisCart.getElements(element);
     thisCart.initActions();
-    
-    //console.log('new Cart', thisCart);
-    //console.log('new Cart products[]', thisCart.products);
   }
   
   getElements(element) {
@@ -61,14 +56,12 @@ class Cart {
 
   initActions() {
     const thisCart = this;
-    thisCart.dom.toggleTrigger.addEventListener('click', function(event) {
-      console.log(event);
-      thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive); //DO TEST !!!
+    thisCart.dom.toggleTrigger.addEventListener('click', function() {
+      thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
     });
     /* NEW 9.8 */
     thisCart.dom.productList.addEventListener('update', function() {
       thisCart.update();
-      console.log('xxxx');
     });
     thisCart.dom.productList.addEventListener('remove', function(event) {
       thisCart.remove(event.detail.cartProduct);
@@ -96,18 +89,15 @@ class Cart {
     //INFO: generatedDOM to HTML zamówienia, który jest wyswietlany w koszyku
 
     /* add element to menu */
-    //console.log('cartContainer:', cartContainer);  
     thisCart.dom.productList.appendChild(generatedDOM);
 
     /* NEW 9.5 */
     thisCart.products.push(new CartProduct(menuProduct, generatedDOM));
-    //console.log('thisCart.products', thisCart.products);
     //INFO: thisCart.products podobny do menuProduct ale zawiera wiecej informacji (np amountWidget i DOM)
 
     /* 9.6 to chyba zrobione na wyrost --->>. */
     //thisCart.dom.totalPrice = document.querySelector(select.cart.totalPrice); ok
 
-    //console.log(thisCart.products.price);
     /* total price of whole cart */
     thisCart.totalPrice += Number(menuProduct.price);
 
@@ -119,14 +109,12 @@ class Cart {
   }
   /* NEW METHOD 9.6  */
   update() {
-    //console.log('CART UPDATE RUN!');
     const thisCart = this;
-    //console.log('cartProductDOm', thisCart.dom);
+
     let deliveryFee = settings.cart.defaultDeliveryFee;
     let totalNumber = 0;
     let subtotalPrice = 0;
     for (let cartProduct of thisCart.products) {
-      //console.log('cartProduct PRICE in loop: ', cartProduct.price);
       totalNumber += Number(cartProduct.amount);
       subtotalPrice += Number(cartProduct.price);   
     }
@@ -139,14 +127,13 @@ class Cart {
     thisCart.totalPrice = subtotalPrice + deliveryFee;
 
     thisCart.dom.deliveryFee.innerHTML = deliveryFee;
-    //console.log('deliveryFee:', deliveryFee);
+
     thisCart.dom.subtotalPrice.innerHTML = subtotalPrice;
-    //console.log('subtotalPrice:', subtotalPrice);
+
     thisCart.dom.totalPrice.innerHTML = Number(thisCart.totalPrice);
     thisCart.dom.totalNumber.innerHTML = totalNumber;
-    //console.log('totalNumber:', totalNumber);
-    thisCart.dom.total.innerHTML = Number(thisCart.totalPrice);
-    //console.log('totalPrice:', thisCart.totalPrice);     
+
+    thisCart.dom.total.innerHTML = Number(thisCart.totalPrice);     
   }
   /* NEW METHOD 9.9 xxx */
   sendOrder() {
@@ -183,20 +170,6 @@ class Cart {
       .then(function(parsedResponse){
         console.log('parsedResponse', parsedResponse);
       });
-
-    //console.log(payload);
-    /*
-    {
-      select.cart.adress.value
-      address: adres klienta wpisany w koszyku,
-      phone: numer telefonu wpisany w koszyku,
-      totalPrice: całkowita cena za zamówienie,
-      subTotalPrice: cena całkowita - koszt dostawy,
-      totalNumber: całkowita liczba sztuk,
-      deliveryFee: koszt dostawy,
-      products: tablica obecnych w koszyku produktów
-    }
-    */
   }
 }
 

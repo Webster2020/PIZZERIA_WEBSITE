@@ -3,7 +3,6 @@ import AmountWidget from './AmountWidget.js';
 import DatePicker from './DatePicker.js';
 import HourPicker from './HourPicker.js';
 import utils from '../utils.js';
-//import BaseWidget from './BaseWidget.js';
 
 class Booking {
   constructor(element) {
@@ -11,8 +10,7 @@ class Booking {
     // NEW 11.3
     thisBooking.table = '';
     thisBooking.tableSelected = '';
-    //thisBooking.element = element;
-    //console.log(thisBooking.element);
+
     thisBooking.render(element);
     thisBooking.initWidgets();
     thisBooking.getData();
@@ -68,11 +66,6 @@ class Booking {
       })
       //20 minuta filmu 
       .then(function([bookings, eventsCurrent, eventsRepeat]) {
-        console.log(bookings);
-        // console.log(urls.eventsCurrent);
-        // console.log(eventsCurrent);
-        // console.log(urls.eventsRepeat);
-        // console.log(eventsRepeat);
         thisBooking.parseData(bookings, eventsCurrent, eventsRepeat);
       });
   }
@@ -101,7 +94,6 @@ class Booking {
       }
     }
 
-    //console.log('thisBooking.booked', thisBooking.booked);
     thisBooking.updateDOM();
   }
 
@@ -161,8 +153,6 @@ class Booking {
   render(element) {
     const thisBooking = this;
 
-    //console.log('render');
-
     const generatedHTML = templates.bookingWidget();
 
     thisBooking.dom = {};
@@ -176,26 +166,17 @@ class Booking {
     thisBooking.dom.hourPicker = thisBooking.dom.wrapper.querySelector(select.widgets.hourPicker.wrapper);
 
     thisBooking.dom.tables = thisBooking.dom.wrapper.querySelectorAll(select.booking.tables);
-    //console.log(thisBooking.dom.tables);
 
     thisBooking.dom.submit = document.querySelector(select.booking.submit);
-    //console.log(thisBooking.dom.submit);
 
     thisBooking.dom.phone = document.querySelector(select.booking.phone);
-    //console.log(thisBooking.dom.phone);
 
     thisBooking.dom.address = document.querySelector(select.booking.address);
-    //console.log(thisBooking.dom.address);
     
     thisBooking.dom.starterWater = document.querySelector(select.booking.starterWater);
-    //console.log(thisBooking.dom.starterWater.checked);
     
     thisBooking.dom.starterBread = document.querySelector(select.booking.starterBread);
-    //console.log(thisBooking.dom.starterBread.checked);
 
-  //   thisBooking.dom.starters = document.querySelectorAll(select.booking.starters);
-  //   console.log(thisBooking.dom.starters);
-  // }
   }
 
   initWidgets() {
@@ -211,32 +192,22 @@ class Booking {
       
       thisBooking.updateDOM();
 
-      //console.log('BEFORE thisBooking.tableSelected', typeof thisBooking.tableSelected);
-      //console.log('BEFORE thisBooking.table', thisBooking.table);
-
       if (thisBooking.tableSelected != '') {
         thisBooking.tableSelected.classList.remove('selected');
         thisBooking.tableSelected = '';
         thisBooking.table = '';
-      } else {
-        //console.log('nothing selected');
-      }
-
-      //console.log('AFTER thisBooking.tableSelected', typeof thisBooking.tableSelected);
-      //console.log('AFTER thisBooking.table', thisBooking.table);
-
-      
+      } 
     });
 
     //NEW 11.3
     for (let table of thisBooking.dom.tables) {
       table.addEventListener('click', function() {
-        //console.log(table);
+
         thisBooking.initTable(table);
       });
     }
+
     //11.3
-    
     thisBooking.dom.submit.addEventListener('click', function(event) {
       event.preventDefault();
       thisBooking.sendBooking();
@@ -263,7 +234,6 @@ class Booking {
         //5. add to table class .selected to clicked table
         table.classList.toggle('selected');
         thisBooking.tableSelected = table;
-        //console.log(thisBooking.tableSelected, thisBooking.table);
       } else {
         // 4. if any table has class .selected then remove it
         thisBooking.tableSelected.classList.remove('selected');
@@ -271,10 +241,8 @@ class Booking {
         //5. add to table class .selected to clicked table
         table.classList.toggle('selected');
         thisBooking.tableSelected = table;
-        //console.log(thisBooking.tableSelected, thisBooking.table);
       }
     }
-    //console.log(thisBooking.table);
   }
 
   sendBooking() {
@@ -308,12 +276,7 @@ class Booking {
       .then(function(parsedResponse){
         console.log('parsedResponse', parsedResponse);
       });
-
-    console.log(payload);
-
     thisBooking.makeBooked(payload.date, payload.hour, payload.duration, payload.table);
-
-    console.log(thisBooking.booked);
   }
 
 }

@@ -24,18 +24,6 @@ const app = {
     }
 
     const idFromHash = window.location.hash.replace('#/', '');
-
-    /*
-    let pageMatchingHash = thisApp.pages[0].id;
-    console.log(pageMatchingHash); 
-    
-    for (let page of thisApp.pages) {
-      if (page.id == idFromHash) {
-        pageMatchingHash = page.id;
-        break;
-      }
-    }
-    */
    
     thisApp.activatePage(idFromHash);
 
@@ -60,11 +48,6 @@ const app = {
 
     /* add class "active" to matching pages, remove from non-matching */
     for (let page of thisApp.pages) {
-      // if (page.id == pageId) {
-      //   page.classList.add(classNames.pages.active);
-      // } else {
-      //   page.classList.remove(classNames.pages.active);
-      // }
       //this and 5 lines above makes the same 
       page.classList.toggle(classNames.pages.active, page.id == pageId);
       //console.log(page);
@@ -75,7 +58,6 @@ const app = {
         classNames.nav.active,
         link.getAttribute('href') == '#' + pageId
       );
-      //console.log(link);
     }
   },
 
@@ -90,8 +72,6 @@ const app = {
         return rawResponse.json();
       })
       .then(function(parsedResponse){
-        //console.log('parsedResponse', parsedResponse);
-         
         // save parseResponse as thisApp.data.products 
         thisApp.data.products = parsedResponse;
         // execute initMenu method
@@ -121,9 +101,6 @@ const app = {
     const thisApp = this;
 
     thisApp.bookingContainer = document.querySelector(select.containerOf.booking);
-    //console.log(thisApp.bookingContainer);
-    //console.log('xx', select.containerOf.booking);
-    //console.log('yy', thisApp.bookingContainer);
     thisApp.booking = new Booking(thisApp.bookingContainer);
   }, 
 

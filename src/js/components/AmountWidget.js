@@ -5,10 +5,7 @@ class AmountWidget extends BaseWidget{
   constructor(element) {
     super(element, settings.amountWidget.defaultValue);
     const thisWidget = this;
-    console.log('<<--NEW AMOUNT WIDGET-->>');
-    //console.log('AmountWidget: ', thisWidget);
-    //console.log('constructor argument: ', element); 
-    //element = thisProduct.amountWidgetElem (from initAmountWidget)
+
     thisWidget.getElements(element);
 
     //thisWidget.setValue(thisWidget.dom.input.value); BASEWIDGET
@@ -39,26 +36,21 @@ class AmountWidget extends BaseWidget{
     thisWidget.dom.input.value = thisWidget.value;
   }
 
-  /* 9.5.3 TU COS TRZEBA POMYSLEC NAD TYM, ZE OMIJA JEDYNKE PRZY ZMIANIE SZTUK */
   initActions() {
     const thisWidget = this;
-    // console.log('initActions');
-    thisWidget.dom.input.addEventListener('change', function(event) {
-      console.log(event);
+
+    thisWidget.dom.input.addEventListener('change', function() {
       thisWidget.value = thisWidget.dom.input.value;
-      //console.log(thisWidget.dom.input.value);
     });
 
     thisWidget.dom.linkDecrease.addEventListener('click', function(event) {
       event.preventDefault();
       thisWidget.setValue(parseInt(thisWidget.dom.input.value) - 1);
-      //console.log(thisWidget.dom.input.value);
     });
 
     thisWidget.dom.linkIncrease.addEventListener('click', function(event) {
       event.preventDefault();
       thisWidget.setValue(parseInt(thisWidget.dom.input.value) + 1);
-      //console.log(thisWidget.dom.input.value);
     });
   }
 

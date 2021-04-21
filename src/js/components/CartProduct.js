@@ -4,15 +4,13 @@ import AmountWidget from './AmountWidget.js';
 class CartProduct {
   constructor(menuProduct, element) {
     const thisCartProduct = this;
-    /* type this all props of menuProduct - how?? check all props of menuProduct in console */
+  
     thisCartProduct.id = menuProduct.id;
     thisCartProduct.name = menuProduct.name;
     thisCartProduct.params = menuProduct.params;
-    thisCartProduct.amount = menuProduct.amount; //ATTENTION !! 9.5.3. !! -->>  to jest ilosc danego produktu dodawanego do koszyka
+    thisCartProduct.amount = menuProduct.amount; 
 
-    thisCartProduct.price = menuProduct.price; //ATTENTION !! 9.5.3. !! -->>  to jest wartosc danego produktu dodawanego do koszyka
-
-    //console.log('Wartosc produktu: ', thisCartProduct.price);
+    thisCartProduct.price = menuProduct.price; 
 
     thisCartProduct.priceSingle = menuProduct.priceSingle;   
     
@@ -25,9 +23,7 @@ class CartProduct {
   
   getElements(element) {
     const thisCartProduct = this;
-    
-    //console.log('thisCartProduct: ', thisCartProduct);
-    
+
     thisCartProduct.dom = {};
     thisCartProduct.dom.wrapper = element;
     thisCartProduct.dom.amountWidget = thisCartProduct.dom.wrapper.querySelector(select.cartProduct.amountWidget);
@@ -61,7 +57,6 @@ class CartProduct {
     });
 
     thisCartProduct.dom.wrapper.dispatchEvent(event);
-    //console.log('remove click');
   }
 
   /* NEW METHOD 9.8 */
