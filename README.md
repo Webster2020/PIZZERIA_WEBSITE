@@ -33,13 +33,16 @@ https://gentle-ridge-92329.herokuapp.com/#/home
   - code responsible for routing creating in app.js
   - js code divided into classes and objects, placed in separeted files
   - every order and booking is sending on server (json server) - if You clone this repo, server is on http://localhost:3131/
+  - 
   ** HOME: **
   - basic information about page
   - slider created with Flickity
+  - 
   ** ORDER: **
   - cart on the top with selected products and form to making order
   - accordions with products
   - in every product user can select amount of product, ingredients, additives and add thems to cart
+  - 
   ** BOOKING: **
   - form to select data
   - bar (with range-slider) to select time of booking
