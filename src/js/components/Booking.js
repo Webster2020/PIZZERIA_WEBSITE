@@ -7,10 +7,9 @@ import utils from '../utils.js';
 class Booking {
   constructor(element) {
     const thisBooking = this;
-    // NEW 11.3
+
     thisBooking.table = '';
     thisBooking.tableSelected = '';
-
     thisBooking.render(element);
     thisBooking.initWidgets();
     thisBooking.getData();
@@ -37,7 +36,6 @@ class Booking {
       ],
     };
 
-    //console.log('getData params', params);
 
     const urls = {
       booking:       settings.db.url + '/' + settings.db.booking
@@ -64,7 +62,6 @@ class Booking {
           eventsRepeatResponse.json(),
         ]);
       })
-      //20 minuta filmu 
       .then(function([bookings, eventsCurrent, eventsRepeat]) {
         thisBooking.parseData(bookings, eventsCurrent, eventsRepeat);
       });
@@ -158,25 +155,16 @@ class Booking {
     thisBooking.dom = {};
     thisBooking.dom.wrapper = element;
     thisBooking.dom.wrapper.innerHTML = generatedHTML;
-
     thisBooking.dom.peopleAmount = thisBooking.dom.wrapper.querySelector(select.booking.peopleAmount);
     thisBooking.dom.hoursAmount = thisBooking.dom.wrapper.querySelector(select.booking.hoursAmount);
-
     thisBooking.dom.datePicker = thisBooking.dom.wrapper.querySelector(select.widgets.datePicker.wrapper);
     thisBooking.dom.hourPicker = thisBooking.dom.wrapper.querySelector(select.widgets.hourPicker.wrapper);
-
     thisBooking.dom.tables = thisBooking.dom.wrapper.querySelectorAll(select.booking.tables);
-
     thisBooking.dom.submit = document.querySelector(select.booking.submit);
-
     thisBooking.dom.phone = document.querySelector(select.booking.phone);
-
-    thisBooking.dom.address = document.querySelector(select.booking.address);
-    
-    thisBooking.dom.starterWater = document.querySelector(select.booking.starterWater);
-    
+    thisBooking.dom.address = document.querySelector(select.booking.address);  
+    thisBooking.dom.starterWater = document.querySelector(select.booking.starterWater);   
     thisBooking.dom.starterBread = document.querySelector(select.booking.starterBread);
-
   }
 
   initWidgets() {
@@ -184,10 +172,8 @@ class Booking {
 
     thisBooking.peopleAmount = new AmountWidget(thisBooking.dom.peopleAmount);
     thisBooking.hoursAmount = new AmountWidget(thisBooking.dom.hoursAmount);
-
     thisBooking.datePicker = new DatePicker(thisBooking.dom.datePicker);
     thisBooking.hourPicker = new HourPicker(thisBooking.dom.hourPicker);
-
     thisBooking.dom.wrapper.addEventListener('update', function() {
       
       thisBooking.updateDOM();
@@ -199,7 +185,6 @@ class Booking {
       } 
     });
 
-    //NEW 11.3
     for (let table of thisBooking.dom.tables) {
       table.addEventListener('click', function() {
 
@@ -207,14 +192,12 @@ class Booking {
       });
     }
 
-    //11.3
     thisBooking.dom.submit.addEventListener('click', function(event) {
       event.preventDefault();
       thisBooking.sendBooking();
     });
   }
 
-  //NEW METHOD 11.3
   initTable(table) {
     const thisBooking = this;
 
@@ -223,22 +206,17 @@ class Booking {
         thisBooking.tableSelected = tab;
       }
     }
-    //1. check is this table free
+
     if (table.classList.contains('booked')) {
-      //2. alert with table is reserved
       alert('This table is reserved! Choose another one please.');
     } else {
-      //3. if is free add number of table to thisBooking.table
       thisBooking.table = table.getAttribute('data-table');
       if (!thisBooking.tableSelected) {
-        //5. add to table class .selected to clicked table
         table.classList.toggle('selected');
         thisBooking.tableSelected = table;
       } else {
-        // 4. if any table has class .selected then remove it
         thisBooking.tableSelected.classList.remove('selected');
         thisBooking.tableSelected = '';
-        //5. add to table class .selected to clicked table
         table.classList.toggle('selected');
         thisBooking.tableSelected = table;
       }
@@ -278,7 +256,6 @@ class Booking {
       });
     thisBooking.makeBooked(payload.date, payload.hour, payload.duration, payload.table);
   }
-
 }
 
 export default Booking;

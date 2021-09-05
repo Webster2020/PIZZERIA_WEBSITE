@@ -9,15 +9,11 @@ class CartProduct {
     thisCartProduct.name = menuProduct.name;
     thisCartProduct.params = menuProduct.params;
     thisCartProduct.amount = menuProduct.amount; 
-
     thisCartProduct.price = menuProduct.price; 
-
     thisCartProduct.priceSingle = menuProduct.priceSingle;   
-    
-    thisCartProduct.getElements(element); // do I need it?
-    /* NEW METHOD 9.5.3 !!! */
+  
+    thisCartProduct.getElements(element);
     thisCartProduct.initAmountWidget();
-    /* NEW METHOD 9.5.8 */
     thisCartProduct.initActions();
   }
   
@@ -32,20 +28,25 @@ class CartProduct {
     thisCartProduct.dom.remove = thisCartProduct.dom.wrapper.querySelector(select.cartProduct.remove);
   }
 
-  /* NEW METHOD 9.5.3 !!! */
   initAmountWidget() {
     const thisCartProduct = this;
-    /* cretaion new properity of instance of class Product */
-    thisCartProduct.amountWidget = new AmountWidget(thisCartProduct.dom.amountWidget); // 9.5.3 SOMEWHERE THERE IS AVAILABLE AMOUNT VALUE ??
-    thisCartProduct.dom.amountWidget.addEventListener('update', function() {
-      /* UPDATE COST OF AMOUNT OF PRODUCT */
-      thisCartProduct.amount = thisCartProduct.dom.amountWidget.querySelector('input').value;
-      thisCartProduct.price = Number(thisCartProduct.amount) * Number(thisCartProduct.priceSingle);
+
+    // thisCartProduct.amountWidget = new AmountWidget(thisCartProduct.dom.amountWidget);
+    // thisCartProduct.dom.amountWidget.addEventListener('update', function() {
+    //   thisCartProduct.amount = thisCartProduct.dom.amountWidget.querySelector('input').value;
+    //   thisCartProduct.price = Number(thisCartProduct.amount) * Number(thisCartProduct.priceSingle);
+    //   thisCartProduct.dom.price.innerHTML = thisCartProduct.price;
+    // });
+
+    thisCartProduct.amountWidget = new AmountWidget(thisCartProduct.dom.amountWidget);
+
+    thisCartProduct.dom.amountWidget.addEventListener('update', function () {
+      thisCartProduct.amount = thisCartProduct.amountWidget.value;
+      thisCartProduct.price = thisCartProduct.priceSingle * thisCartProduct.amount;
       thisCartProduct.dom.price.innerHTML = thisCartProduct.price;
     });
   }
 
-  /* NEW METHOD 9.8 */
   remove() {
     const thisCartProduct = this;
 
@@ -59,7 +60,6 @@ class CartProduct {
     thisCartProduct.dom.wrapper.dispatchEvent(event);
   }
 
-  /* NEW METHOD 9.8 */
   initActions() {
     const thisCartProduct = this;
 
@@ -72,7 +72,6 @@ class CartProduct {
     });
   }
 
-  /* NEW METHOD 9.9 xxxx */
   getData() {
     const thisCartProduct = this;
 
